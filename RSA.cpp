@@ -29,10 +29,11 @@ int solve_linear_congruence_with_Euklides(int a, int b, int m){
 
 ///Ismételt négyzetreemelések módszere
 int ismetelt_negyzetreemelesek_modszere(int a, int b, int m){
-	if(a < 0 && a < m && b >= 1){
+	if( 0 < a && a < m && b >= 1){
 		int c = 1;
 		while(b != 0){
-			if(b % 2 == 0)
+			std::cout << "a is: "<< a <<", b is: " << b << ", c is: " << c << std::endl;
+			if(b % 2 != 0)
 				c = (c*a)%m;
 			b = b/2;
 			a = (a*a)%m;
@@ -51,49 +52,40 @@ bool Miller_Rabin(int m){
 			}
 			
 			///Generate random number [START]
-			std::random_device randomNumberGenerator;
-			randomNumberGenerator.min(1); randomNumberGenerator.max(m-1);
-			int a = randomNumberGenerator();
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_int_distribution<> dis(1, m-1);
+			int a = dis(gen);
 			///Generate random number [END]
 			
-			if(euklidesz(a, m) != 1 )
+			if(euklides(a, m) != 1 )
 				return false;
 				
-			int t = (m-1) / std::pow(2, constans)
+			int t = (m-1) / std::pow(2, constans);
 			if(ismetelt_negyzetreemelesek_modszere(a, constans, m) != 1){
-				for(int k = 1; k <= t-1; k++){
-					
+				bool tmp = true;
+				for(int k = 0; k <= t-1; k++){
+					if(ismetelt_negyzetreemelesek_modszere(a, constans*std::pow(2, k), m) == -1){
+						tmp = false;
+					}
 				}
+				if(tmp)
+					return false;
 			}
-			
-			
-				if()
-				
-				if( ismetelt_negyzetreemelesek_modszere(a, constans*std::pow(2, k), m) != -1 &&
-					){
-						return false;
-				}
-			}
-			
-		}
-		
+		}	
 	}
 	else
 		throw "MillerRabin csak páratlan egészt kaphat, mivel minden prím páratlan.";
-	return false;
+	return true;
 }
 
 
 
 int main(){
 	std::cout << "hello world\n";
-	std::cout << euklidesz(49, 28) << std::endl;
-	{
-		int k  = 0;
-		int m = 561;
-		for(k = 0; (m-1)% (int)std::pow(2, k+1) == 0; k++)
-			std::cout << "k = " << k+1 << "and m-1/2^k = " << (m-1) /std::pow(2, k+1) << std::endl;
-		std::cout << "k = " << k << "and m-1/2^k = " << (m-1) /std::pow(2, k) << std::endl;
+	try{
+		std::cout << ismetelt_negyzetreemelesek_modszere(13, 53, 97);
+	} catch(const char* e){
+		std::cout << e << std::endl;
 	}
-
 }
